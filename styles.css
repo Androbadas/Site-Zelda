@@ -58,7 +58,6 @@ h1, h2 {
 /* css classe */
 .section {
     height: 105vh;
-    height: 105dvh;
     width: 100%;   
 }
 
@@ -188,7 +187,6 @@ h1, h2 {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    height: 100dvh;
     overflow: hidden;
     z-index: 1;
 }
@@ -358,7 +356,6 @@ h1, h2 {
     position: relative;
     width: 100%;
     height: 105vh;
-    height: 105dvh;
     z-index: 0;
 }
 
@@ -367,7 +364,6 @@ h1, h2 {
     position: relative;
     width: 100%;
     height: 105vh;
-    height: 105dvh;
     z-index: 0;
     visibility: hidden;
     opacity: 0;
@@ -1456,7 +1452,6 @@ h1, h2 {
     }
 
     #intro-section {
-        height: 105dvh;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -1784,7 +1779,6 @@ h1, h2 {
     /* Section intro */
 
     #intro-section {
-        height: 105dvh;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -1839,7 +1833,7 @@ h1, h2 {
 
     .title-slider-container.argument {
         position: absolute;
-        top: 80px;
+        top: 30px;
         right: 50%;
         transform: translateX(50%);
         width: 300px;
@@ -2168,7 +2162,7 @@ h1, h2 {
     /* section vente */
 
     #sell-section {
-        min-height:120dvh;
+        min-height:120vh;
         height: 100%;
         flex-direction: column;
         align-items: center;

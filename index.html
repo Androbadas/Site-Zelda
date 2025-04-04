@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>[FAN MADE] Zelda TOTK Landing Page</title>
+        <link rel="icon" href="assets/images/logo-title-zelda-totk.png" type="png">
+        <link href="./styles.css" rel="stylesheet" type="text/css">
+        <meta charset="UFT-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <!-- Première section -->
+    <div class="section" id="first-section">
+        <div id="logo-middle-div">
+            <img src="assets/images/The_Legend_of_Zelda_Tears_of_the_Kingdom_Logo.webp" alt="Logo Zelda Tears of The Kingdom">
+            <button class="bouton-classique">DÉCOUVRIR</button>
+        </div>
+        <div id="date-et-fleche">
+            <p id="date">Disponible le 12/05/2023</p>
+            <div class="fleche"></div>
+        </div>
+        <div id="container-paralax">
+            <div id="background-paralax">
+                <div id="link-paralax"></div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Section intro -->
+
+    <div class="section" id="intro-section">
+        <div id="intro-text-container">
+            <h1 class="titre">
+                une nouvelle menace plane sur hyrule
+            </h1>
+            <p>
+                Un cataclisme a frappé hyrule, et de mystèrieuses îles flottantes 
+                ont fait leur apparition. Découvrez hyrules et ses secrets et 
+                partez à l'aventure avec <b>The Legend of Zelda Tears of The Kingdom</b>.
+            </p>
+        </div>
+        <video autoplay loop muted>
+            <source src="assets/videos/TOTK_VIDEO1.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+        </video>
+    </div>
+
+    
+    <!-- Section Argument -->
+    
+    <!-- <div class="section" id="argument-section"> -->
+    <!-- slider daugther -->
+    <!-- slider mother -->
+
+    <div class="slider" id="argument-section">    <!-- slider mother -->
+        <div class="shadow"></div>
+        <div class="sub-slider active">
+            <div class="video">
+                <video class="video-slide active" autoplay preload playinline loop muted id="video-ciel">
+                    <source src="assets/videos/video-ciel-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+                </video>
+                <video class="video-slide" autoplay preload playinline loop muted id="video-terre">
+                    <source src="assets/videos/video-terre-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+                </video>
+                <video class="video-slide" autoplay preload playinline loop muted id="video-profondeur">
+                    <source src="assets/videos/video-profondeur-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+                </video>
+            </div>
+            <div class="title-slider-container argument">
+                <div class="title-slide argument active" id="title-ciel">
+                    <h2 class="title-slide-header argument">
+                        explorez
+                    </h2>
+                    <div class="fleche"></div>
+                    <p class="title-slide-text argument">
+                        De nouvelles îles mystérieuses sont apparues dans le ciel, elles seraient liés au premier roi d'Hyrule.
+                    </p>
+                </div>
+                <div class="title-slide argument" id="title-terre">
+                    <h2 class="title-slide-header argument">
+                        explorez
+                    </h2>
+                    <div class="fleche"></div>
+                    <p class="title-slide-text argument">
+                        Les terres d'Hyrules ont été boulversé par la calamité, les villes ont été transformées et de nouvelles grottes sont apparues.
+                    </p>
+                </div>
+                <div class="title-slide argument" id="title-profondeur">
+                    <h2 class="title-slide-header argument">
+                        explorez
+                    </h2>
+                    <div class="fleche"></div>
+                    <p class="title-slide-text argument">
+                        D'étranges abîmes sont apparus, menant aux terres des profondeurs, dangereuses, elles contiennent d'étranges ruines d'une ancienne civilisation.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="video">   <!-- video container mother slides 2&3 -->
+            <!-- video créer -->
+            <video class="video-slide" autoplay preload playinline loop muted id="video-creez">
+                <source src="assets/videos/video-creez-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+            <!-- video découvrez -->
+            <video class="video-slide" autoplay preload playinline loop muted id="video-decouvrez">
+                <source src="assets/videos/video-discover-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+        </div>
+        <div class="title-slider-container argument">
+                <!-- title container mother slides 2&3 -->
+            <div class="title-slide argument" id="title-creez">
+                <h2 class="title-slide-header argument">
+                    creez
+                </h2>
+                <div class="fleche"></div>
+                <p class="title-slide-text argument">
+                    Les nouveaux pouvoirs de Link offrent une liberté totale, avec les nouveaux pouvoirs vous pouvez créer ce que vous voulez. <br>Libérez votre imagination !
+                </p>
+            </div>
+            <div class="title-slide argument" id="title-decouvrez">
+                <h2 class="title-slide-header argument">
+                    decouvrez
+                </h2>
+                <div class="fleche"></div>
+                <p class="title-slide-text argument">
+                    Découvrez une mystérieuse civilisation disparue, dont les seules traces sont d'anciennes ruines dans la terre et le ciel.
+                </p>
+            </div>
+        </div>
+        <nav class="nav-argument">
+            <a class="nav-button argument active" id="explorer">
+                <p class="nav-button-text argument active">Explorez.</p>
+                <img class="nav-button-img argument active" src="assets/images/explorez.JPG" alt="Link sur une île dans le ciel">
+            </a>
+            <a class="nav-button argument" id="creez">
+                <p class="nav-button-text argument" id="creez-text-button">Créez.</p>
+                <img class="nav-button-img argument" src="assets/images/creez-img.jpg" alt="Link utilise le pouvoir Emprise" id="creez-button-img">
+            </a>
+            <a class="nav-button argument" id="decouvrez">
+                <p class="nav-button-text argument">Découvrez</p>
+                <img class="nav-button-img argument" src="assets/images/decouvrez-img.jpg" alt="Link est devant un mur contenant une mystèrieuses inscription">
+            </a>
+        </nav>
+        <nav class="nav-explorer active">
+            <a class="nav-button explorer active" id="ciel"></a>
+            <a class="nav-button explorer" id="terre"></a>
+            <a class="nav-button explorer" id="profondeur"></a>
+        </nav>
+    </div>
+
+
+    <div class="section slider" id="power-section">
+        <div id="power-title">
+            <div id="power-title-container">
+                <h2 class="title power">
+                    de nouveaux pouvoirs
+                </h2>
+                <div class="fleche"></div>
+            </div>
+        </div>
+        <div id="power-slider-container">
+            <div class="title-slider-container power">
+                <div class="title-slide power active" id="title-retrospective">
+                    <h3 class="title-slide-header power">Rétrospective</h3>
+                    <p class="title-slide-text power">Rétrospective vous permet d'inverser le mouvement des objets, il vous sera utile pour résoudre des énigmes ou attaquer des ennemis. </p>
+                </div>
+                <div class="title-slide power" id="title-infiltration">
+                    <h3 class="title-slide-header power">Infiltration</h3>
+                    <p class="title-slide-text power">Infiltration permet à Link de nager à travers tout type d'objet solide, pratique pour explorer !</p>
+                </div>
+                <div class="title-slide power" id="title-amalgame">
+                    <h3 class="title-slide-header power">Amalgame</h3>
+                    <p class="title-slide-text power">Amalgame vous permet de fusionner n'importe quelle arme ou flèche, avec tous les objets du jeu, offrant un nombre infini de combinaisons.</p>
+                </div>
+                <div class="title-slide power" id="title-emprise">
+                    <h3 class="title-slide-header power">Emprise</h3>
+                    <p class="title-slide-text power">Emprise permet de prendre et d'attacher n'importe quel objet, avec ce pouvoir vous pouvez créer tout ce que vous voulez, votre limite est votre imagination !</p>
+                </div>
+            </div>
+            <div class="nav-power-container">
+                <nav class="nav-power">
+                    <a class="nav-button power active" id="retrospective"></a>
+                    <a class="nav-button power" id="infiltration"></a>
+                    <a class="nav-button power" id="amalgame"></a>
+                    <a class="nav-button power" id="emprise"></a>
+                </nav>
+            </div> 
+        </div>
+        <div class="video"> 
+            <video class="video-slide active" autoplay preload playinline loop muted id="video-retrospective">
+                <source src="assets/videos/video-retrospective.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+            <video class="video-slide" autoplay preload playinline loop muted id="video-infiltration">
+                <source src="assets/videos/video-infiltration.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+            <video class="video-slide" autoplay preload playinline loop muted id="video-amalgame">
+                <source src="assets/videos/video-amalgame.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+            <video class="video-slide" autoplay preload playinline loop muted id="video-emprise">
+                <source src="assets/videos/video-emprise.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+            </video>
+        </div>
+    </div>  
+
+    
+    <div class="section slider" id="character-section">
+        <nav class="nav-character"> 
+            <a class="nav-button character active" id="zelda"></a> 
+            <a class="nav-button character" id="link"></a>
+            <a class="nav-button character" id="ganondorf"></a>
+        </nav>
+
+        <div class="slide active" id="slide-zelda"> 
+            <div class="title-slide character active" id="title-zelda"> 
+                <h2 class="title-slide-header character"> 
+                    zelda
+                </h2>
+                <p class="title-slide-text character"> 
+                    Princesse douce et curieuse d'Hyrule, elle disparaît mystérieusement après le cataclysme
+                </p>
+            </div>
+            <div class="shadow"></div>
+            <img class="character-image-bg zelda" src="assets/images/zelda-character-bg-2.png">
+            <img class="character-image zelda" src="assets/images/zelda-character-main.png">
+        </div>
+        <div class="slide" id="slide-link"> 
+            <div class="title-slide character active" id="title-link"> 
+                <h2 class="title-slide-header character"> 
+                    link
+                </h2>
+                <p class="title-slide-text character"> 
+                    Héro d'Hyrule par le passé, son mystérieux bras droit lui confère de nouveaux pouvoir. 
+                </p>
+            </div>
+            <div class="shadow"></div>
+            <img class="character-image-bg link" src="assets/images/link-character-bg.png">
+            <img class="character-image link" src="assets/images/link-character.png">
+        </div>
+        <div class="slide" id="slide-ganondorf"> 
+            <div class="title-slide character active" id="title-ganondorf"> 
+                <h2 class="title-slide-header character"> 
+                    ganondorf
+                </h2>
+                <p class="title-slide-text character"> 
+                    Le roi démon, responsable du cataclysme, Il compte conquérir le royaume Hyrule. 
+                </p>
+            </div>
+            <div class="shadow"></div>
+            <img class="character-image-bg ganondorf" src="assets/images/ganondorf-character-bg.png">
+            <img class="character-image ganondorf" src="assets/images/ganondorf-character.png">
+        </div>
+    </div>
+
+
+
+    <div class="slider section" id="trailer-section">
+        <div id="trailer-title">
+            <div id="trailer-title-container">
+                <h2 class="title">
+                    trailers
+                </h2>
+                <div class="fleche"></div>
+            </div>
+        </div>
+        <div class="video caroussel">
+            <iframe class="video-slide active" src="https://www.youtube.com/embed/hhhlIHZz-kg" id="video-trailer1" frameborder="0" allowfullscreen></iframe>
+            <iframe class="video-slide" src="https://www.youtube.com/embed/NThAJP1VL8M" id="video-trailer2" frameborder="0" allowfullscreen></iframe>
+            <iframe class="video-slide" src="https://www.youtube.com/embed/Dv-7K_m589I" id="video-trailer3" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <nav class="nav-trailer">
+            <a class="nav-button trailer active" id="trailer1">
+                <p class="nav-button-text trailer active">Trailer 1</p>
+                <img class="nav-button-img trailer active" src="assets/images/youtube-thumbnail-trailer-1.jpg" alt="Image premier trailer">
+            </a>
+            <a class="nav-button trailer" id="trailer2">
+                <p class="nav-button-text trailer">Trailer 2</p>
+                <img class="nav-button-img trailer" src="assets/images/youtube-thumbnail-trailer-2.jpg" alt="Image premier trailer">
+            </a>
+            <a class="nav-button trailer" id="trailer3">
+                <p class="nav-button-text trailer">Trailer 3</p>
+                <img class="nav-button-img trailer" src="assets/images/youtube-thumbnail-trailer-3.jpg" alt="Image premier trailer">
+            </a>
+        </nav>
+    </div> 
+
+    
+    <div class="section" id="sell-section">
+        <div id="sell-title-container">
+            <img src="assets/items/img-title.svg" id="img-title">
+            <div class="fleche"></div>
+            <p id="title-text-sell">
+                Le mystèrieux Ganondorf menace de le royaume d'hyrule, 
+                partez à l'aventure dès maintenant
+                avec <b>The Legend Of Zelda Tears of The Kingdom</b>.
+                <br><br>La princesse Zelda vous attend !
+            </p>
+        </div>
+        <div id="all-sell-button-container">
+            <div class="little-button-container">
+                <a class="sell-button" id="edition-physique">
+                    <p>ÉDITION PHYSIQUE</p>
+                    <p>69.99 €</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                </a>
+                <a class="sell-button" id="edition-digitale">
+                    <p>ÉDITION DIGITALE</p>
+                    <p>69.99 €</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                </a>
+            </div>
+            <a class="sell-button" id="edition-collector">
+                <p>ÉDITION COLLECTOR</p>
+                <p>129.99 €</p>
+                <picture id="img-collector">
+                    <source srcset="assets/items/phone-width-collector-button.png" media="(max-width: 730px)" />
+                    <img src="assets/items/collector-button-img.png" alt="collector-zelda"/>
+                </picture>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                </svg>
+            </a>
+            <div class="fleche"></div>
+            <a class="sell-button" id="nintendo-switch-oled">
+                <p>NINTENDO SWITCH OLED</p>
+                <p id="sub-text-button">Édition Zelda Tears Of the Kingdom</p>
+                <picture id="img-switch-oled">
+                    <source srcset="assets/items/phone-witdth-oled.png" media="(max-width: 730px)" />
+                    <img src="assets/items/switch-oled-button-img.png" alt="collector-zelda"/>
+                </picture>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                </svg>
+            </a>
+            <div class="little-button-container">
+                <a class="sell-button" id="amiibo">
+                    <p id="amiibo-text">amiibo</p>
+                    <img src="assets/items/amiibo-button-img.png" id="img-amiibo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                </a>
+                <a class="sell-button" id="accessoires">
+                    <p>ACCESSOIRES</p>
+                    <img src="assets/items/accessoires-button-img.png" id="img-accessoires">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="#FFFDE4" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <video class="video-bg" autoplay preload playinline loop muted>
+            <source src="assets/videos/video-terre-v0.mp4" type="video/mp4" alt="Video Zelda Tears of The Kingdom"/>
+        </video>
+    </div> 
+
+    <script src="script.js"></script> 
+    
+</body>
+</html>
+

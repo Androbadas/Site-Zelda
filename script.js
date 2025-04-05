@@ -1,7 +1,6 @@
 // Effet de paralax
 // Configuration des éléments parallaxe
 
-
 const config = {
   background: {
     elements: [
@@ -200,37 +199,18 @@ function updateParallax() {
   animationFrameId = requestAnimationFrame(updateParallax);
 }
 
-// Vérifier si le gyroscope est disponible et demander l'autorisation
-function checkGyroscopeAvailability() {
+// Vérifier si le gyroscope est disponible et demander l'autorisation automatiquement
+function requestGyroscopePermission() {
   if (window.DeviceOrientationEvent) {
     // Pour iOS 13+ qui nécessite une permission explicite
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      // Créer un bouton pour demander la permission
-      const permissionButton = document.createElement('button');
-      permissionButton.innerText = 'Activer le gyroscope';
-      permissionButton.style.position = 'fixed';
-      permissionButton.style.top = '10px';
-      permissionButton.style.left = '10px';
-      permissionButton.style.zIndex = '1000';
-      permissionButton.style.padding = '10px';
-      permissionButton.style.backgroundColor = '#3498db';
-      permissionButton.style.color = 'white';
-      permissionButton.style.border = 'none';
-      permissionButton.style.borderRadius = '5px';
-      permissionButton.style.cursor = 'pointer';
-      
-      permissionButton.addEventListener('click', () => {
-        DeviceOrientationEvent.requestPermission()
-          .then(response => {
-            if (response === 'granted') {
-              window.addEventListener('deviceorientation', handleGyroscope);
-              document.body.removeChild(permissionButton);
-            }
-          })
-          .catch(console.error);
-      });
-      
-      document.body.appendChild(permissionButton);
+      DeviceOrientationEvent.requestPermission()
+        .then(response => {
+          if (response === 'granted') {
+            window.addEventListener('deviceorientation', handleGyroscope);
+          }
+        })
+        .catch(console.error);
     } else {
       // Pour les autres navigateurs qui ne nécessitent pas de permission
       window.addEventListener('deviceorientation', handleGyroscope);
@@ -250,7 +230,8 @@ function init() {
   
   // Initialiser le gyroscope pour les appareils mobiles
   if (isMobileDevice()) {
-    checkGyroscopeAvailability();
+    // Demander l'autorisation du gyroscope au chargement
+    requestGyroscopePermission();
   }
   
   // Nettoyage lors du déchargement de la page
@@ -265,8 +246,8 @@ function init() {
   });
 }
 
-// Démarrer le parallaxe
-init();
+// Démarrer le parallaxe quand le DOM est entièrement chargé
+document.addEventListener('DOMContentLoaded', init);
 
 
 

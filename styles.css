@@ -560,12 +560,13 @@ h1, h2 {
     width: 45px;
     height: 45px;
     padding: 0;
-    filter: drop-shadow(0px 0px 10px rgba(67, 98, 127, 1));
+    box-shadow : 0px 0px 10px rgba(67, 98, 127, 1);
+    border-radius: 50%;
     cursor: pointer;
 }
 
 .nav-button.explorer.active {
-    filter: drop-shadow(0px 0px 10px rgba(172, 255, 247, 1));
+    box-shadow: 0px 0px 10px rgba(172, 255, 247, 1);
 }
 
 

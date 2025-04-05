@@ -1,37 +1,308 @@
+// Effet de paralax
+// Configuration des éléments parallaxe
 
-// document.addEventListener("mousemove", (event) => {
-//   const parallaxElement = document.getElementById("link-paralax");
-//   if (!parallaxElement) return;
-  
-//   const moveFactorX = 0.03; // Facteur de parallaxe
-//   const moveFactorY = 0.01;
-//   const { clientX, clientY } = event;
-  
-//   const windowWidth = window.innerWidth;
-//   const windowHeight = window.innerHeight;
-  
-//   const offsetX = (clientX - windowWidth / 3) * moveFactorX;
-//   const offsetY = (clientY - windowHeight / 3) * moveFactorY;
-  
-//   parallaxElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-// });
 
-// document.addEventListener("mousemove", (event) => {
-//   const parallaxElement = document.getElementById("background-paralax");
-//   if (!parallaxElement) return;
+const config = {
+  background: {
+    elements: [
+      "background-paralax", "paralax-zelda-background", "paralax-link-character-background", "paralax-ganondorf-background"
+    ],
+    moveFactorX: 0.03,
+    moveFactorY: 0,
+    centerDivisorX: 3,
+    centerDivisorY: 3,
+    smoothingFactor: 0.1,
+    blurEnabled: true,
+    maxBlur: 5 // Flou maximum en pixels
+  },
+  character: {
+    elements: [
+      "link-paralax", "paralax-zelda-character", "paralax-link-character", "paralax-ganondorf-character"
+    ],
+    moveFactorX: 0.015,
+    moveFactorY: 0,
+    centerDivisorX: 2,
+    centerDivisorY: 2,
+    smoothingFactor: 0.05,
+    blurEnabled: false, // Désactivé pour l'arrière-plan par défaut
+    maxBlur: 0.5
+  },
+  // Configuration pour le gyroscope
+  gyroscope: {
+    enabled: true,
+    sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
+    sensitivityY: 10, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
+    maxAngleX: 45,    // Angle maximum en degrés pour l'axe X
+    maxAngleY: 45,    // Angle maximum en degrés pour l'axe Y
+    smoothingFactor: 0.2 // Facteur de lissage pour les mouvements du gyroscope
+  }
+};
+
+// Variables pour stocker les positions actuelles et cibles
+let mouseX = 0, mouseY = 0;
+let gyroX = 0, gyroY = 0;
+let currentX = 0, currentY = 0;
+let animationFrameId = null;
+let edgeThreshold = 0.2; // Seuil pour déterminer la proximité au bord (0.2 = 20% de la largeur/hauteur)
+let isUsingGyro = false; // Pour savoir si on utilise le gyroscope ou la souris
+
+// Ajouter des transitions CSS aux éléments
+function setupElements() {
+  // Combiner tous les éléments
+  const allElements = [...config.character.elements, ...config.background.elements];
   
-//   const moveFactorX = 0.015; // Facteur de parallaxe
-//   const moveFactorY = 0;
-//   const { clientX, clientY } = event;
+  allElements.forEach(elementId => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      // Ajouter des transitions pour transform et filter
+      element.style.transition = "transform 200ms cubic-bezier(0.33, 1, 0.68, 1), filter 300ms ease-out";
+    }
+  });
+}
+
+// Calculer la proximité au bord (0 = centre, 1 = bord)
+function calculateEdgeProximity(x, y, width, height) {
+  // Normaliser les coordonnées entre 0 et 1
+  const normalizedX = x / width;
+  const normalizedY = y / height;
   
-//   const windowWidth = window.innerWidth;
-//   const windowHeight = window.innerHeight;
+  // Calculer la distance au centre (0.5, 0.5)
+  const distanceX = Math.abs(normalizedX - 0.5) * 2; // 0 au centre, 1 au bord
+  const distanceY = Math.abs(normalizedY - 0.5) * 2;
   
-//   const offsetX = (clientX - windowWidth / 2) * moveFactorX;
-//   const offsetY = (clientY - windowHeight / 2) * moveFactorY;
+  // Retourner la proximité au bord et la direction
+  return {
+    proximity: Math.max(distanceX, distanceY),
+    direction: {
+      x: normalizedX < 0.5 ? 1 : -1, // Direction du flou (opposée à la souris)
+      y: normalizedY < 0.5 ? 1 : -1
+    }
+  };
+}
+
+// Mettre à jour la position de la souris
+function updateMousePosition(event) {
+  isUsingGyro = false; // Priorité à la souris si les deux sont utilisés
+  mouseX = event.clientX;
+  mouseY = event.clientY;
   
-//   parallaxElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-// });
+  // Démarrer l'animation si elle n'est pas déjà en cours
+  if (!animationFrameId) {
+    animationFrameId = requestAnimationFrame(updateParallax);
+  }
+}
+
+// Gérer les données du gyroscope
+function handleGyroscope(event) {
+  if (!config.gyroscope.enabled) return;
+  
+  // Ne traiter que les événements du gyroscope si nous n'utilisons pas la souris
+  // Ou si nous sommes sur mobile (pas de souris)
+  if (isMobileDevice() || !hasMouseMoved) {
+    isUsingGyro = true;
+    
+    // Limiter les angles aux valeurs configurées
+    const betaAngle = Math.max(-config.gyroscope.maxAngleX, Math.min(config.gyroscope.maxAngleX, event.beta));
+    const gammaAngle = Math.max(-config.gyroscope.maxAngleY, Math.min(config.gyroscope.maxAngleY, event.gamma));
+    
+    // Convertir les angles en position relative à l'écran
+    // Beta contrôle l'axe Y (inclinaison avant/arrière)
+    // Gamma contrôle l'axe X (inclinaison gauche/droite)
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
+    gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
+    gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
+    
+    // Démarrer l'animation si elle n'est pas déjà en cours
+    if (!animationFrameId) {
+      animationFrameId = requestAnimationFrame(updateParallax);
+    }
+  }
+}
+
+// Détecter si l'appareil est mobile
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Variable pour suivre si la souris a bougé
+let hasMouseMoved = false;
+
+// Mettre à jour l'effet de parallaxe avec lissage et flou directionnel
+function updateParallax() {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  
+  // Utiliser soit la position de la souris, soit celle du gyroscope
+  const targetX = isUsingGyro ? gyroX : mouseX;
+  const targetY = isUsingGyro ? gyroY : mouseY;
+  
+  // Appliquer un lissage différent selon la source d'entrée
+  const smoothing = isUsingGyro ? config.gyroscope.smoothingFactor : 0.1;
+  
+  // Appliquer un lissage à la position actuelle
+  currentX += (targetX - currentX) * smoothing;
+  currentY += (targetY - currentY) * smoothing;
+  
+  // Calculer la proximité au bord et la direction
+  const edge = calculateEdgeProximity(currentX, currentY, windowWidth, windowHeight);
+  
+  // N'appliquer le flou que lorsque la souris est proche du bord
+  const edgeEffect = edge.proximity > edgeThreshold ? 
+    (edge.proximity - edgeThreshold) / (1 - edgeThreshold) : 0;
+  
+  // Mettre à jour les éléments de personnage
+  config.character.elements.forEach(elementId => {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    // Appliquer le parallaxe
+    const offsetX = (currentX - windowWidth / config.character.centerDivisorX) * config.character.moveFactorX;
+    const offsetY = (currentY - windowHeight / config.character.centerDivisorY) * config.character.moveFactorY;
+    
+    element.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    
+    // Appliquer le flou directionnel si activé
+    if (config.character.blurEnabled && edgeEffect > 0) {
+      // Calculer l'intensité du flou
+      const blurAmount = edgeEffect * config.character.maxBlur;
+      
+      // Appliquer un flou directionnel (du côté opposé à la souris)
+      // Nous utilisons un flou standard car le flou directionnel CSS n'est pas bien supporté
+      element.style.filter = `blur(${blurAmount}px)`;
+    } else {
+      element.style.filter = 'none';
+    }
+  });
+  
+  // Mettre à jour les éléments d'arrière-plan
+  config.background.elements.forEach(elementId => {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const offsetX = (currentX - windowWidth / config.background.centerDivisorX) * config.background.moveFactorX;
+    const offsetY = (currentY - windowHeight / config.background.centerDivisorY) * config.background.moveFactorY;
+    
+    element.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    
+    // Appliquer le flou directionnel si activé pour l'arrière-plan
+    if (config.background.blurEnabled && edgeEffect > 0) {
+      const blurAmount = edgeEffect * config.background.maxBlur;
+      element.style.filter = `blur(${blurAmount}px)`;
+    } else {
+      element.style.filter = 'none';
+    }
+  });
+  
+  // Continuer l'animation
+  animationFrameId = requestAnimationFrame(updateParallax);
+}
+
+// Vérifier si le gyroscope est disponible et demander l'autorisation
+function checkGyroscopeAvailability() {
+  if (window.DeviceOrientationEvent) {
+    // Pour iOS 13+ qui nécessite une permission explicite
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // Créer un bouton pour demander la permission
+      const permissionButton = document.createElement('button');
+      permissionButton.innerText = 'Activer le gyroscope';
+      permissionButton.style.position = 'fixed';
+      permissionButton.style.top = '10px';
+      permissionButton.style.left = '10px';
+      permissionButton.style.zIndex = '1000';
+      permissionButton.style.padding = '10px';
+      permissionButton.style.backgroundColor = '#3498db';
+      permissionButton.style.color = 'white';
+      permissionButton.style.border = 'none';
+      permissionButton.style.borderRadius = '5px';
+      permissionButton.style.cursor = 'pointer';
+      
+      permissionButton.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              window.addEventListener('deviceorientation', handleGyroscope);
+              document.body.removeChild(permissionButton);
+            }
+          })
+          .catch(console.error);
+      });
+      
+      document.body.appendChild(permissionButton);
+    } else {
+      // Pour les autres navigateurs qui ne nécessitent pas de permission
+      window.addEventListener('deviceorientation', handleGyroscope);
+    }
+  }
+}
+
+// Initialisation
+function init() {
+  setupElements();
+  
+  // Écouter les événements de la souris
+  document.addEventListener("mousemove", (e) => {
+    hasMouseMoved = true;
+    updateMousePosition(e);
+  });
+  
+  // Initialiser le gyroscope pour les appareils mobiles
+  if (isMobileDevice()) {
+    checkGyroscopeAvailability();
+  }
+  
+  // Nettoyage lors du déchargement de la page
+  window.addEventListener("beforeunload", () => {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    
+    // Supprimer les écouteurs d'événements
+    document.removeEventListener("mousemove", updateMousePosition);
+    window.removeEventListener('deviceorientation', handleGyroscope);
+  });
+}
+
+// Démarrer le parallaxe
+init();
+
+
+
+                // document.addEventListener("mousemove", (event) => {
+                //   const parallaxElement = document.getElementById("link-paralax");
+                //   if (!parallaxElement) return;
+                  
+                //   const moveFactorX = 0.03; // Facteur de parallaxe
+                //   const moveFactorY = 0.01;
+                //   const { clientX, clientY } = event;
+                  
+                //   const windowWidth = window.innerWidth;
+                //   const windowHeight = window.innerHeight;
+                  
+                //   const offsetX = (clientX - windowWidth / 3) * moveFactorX;
+                //   const offsetY = (clientY - windowHeight / 3) * moveFactorY;
+                  
+                //   parallaxElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                // });
+
+                // document.addEventListener("mousemove", (event) => {
+                //   const parallaxElement = document.getElementById("background-paralax");
+                //   if (!parallaxElement) return;
+                  
+                //   const moveFactorX = 0.015; // Facteur de parallaxe
+                //   const moveFactorY = 0;
+                //   const { clientX, clientY } = event;
+                  
+                //   const windowWidth = window.innerWidth;
+                //   const windowHeight = window.innerHeight;
+                  
+                //   const offsetX = (clientX - windowWidth / 2) * moveFactorX;
+                //   const offsetY = (clientY - windowHeight / 2) * moveFactorY;
+                  
+                //   parallaxElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+                // });
 
 
 const sliderInteraction = () => {
@@ -117,3 +388,7 @@ sliderInteraction();
 });
 
 // pas oublier le défilement automatique des sliders
+
+
+
+

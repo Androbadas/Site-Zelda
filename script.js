@@ -199,7 +199,110 @@ function updateParallax() {
   animationFrameId = requestAnimationFrame(updateParallax);
 }
 
-// Vérifier si le gyroscope est disponible et demander l'autorisation automatiquement
+// NOUVELLE FONCTION - Créer une popup adaptée au style Zelda TOTK
+function createPermissionUI() {
+  // Si la popup existe déjà, ne pas la recréer
+  if (document.getElementById('gyro-permission-popup')) return;
+  
+  // Créer l'élément de popup
+  const popup = document.createElement('div');
+  popup.id = 'gyro-permission-popup';
+  
+  // Créer le contenu de la popup
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h3>EFFET PARALLAXE</h3>
+      <p>Pour une expérience immersive avec votre appareil mobile, autorisez l'accès au gyroscope.</p>
+      <div class="bouton-classique" id="gyro-permission-btn">AUTORISER</div>
+    </div>
+  `;
+  
+  // Ajouter le popup au corps du document
+  document.body.appendChild(popup);
+  
+  // Ajouter l'écouteur d'événement au bouton
+  document.getElementById('gyro-permission-btn').addEventListener('click', function() {
+    requestGyroscopePermission();
+    // Ajouter une classe pour faire disparaître la popup en douceur
+    popup.classList.add('fade-out');
+    // Supprimer la popup après l'animation
+    setTimeout(() => {
+      if (popup.parentNode) {
+        document.body.removeChild(popup);
+      }
+    }, 500);
+  });
+  
+  // Ajouter le style CSS pour la popup
+  const style = document.createElement('style');
+  style.textContent = `
+    #gyro-permission-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fade-in 0.5s ease-out;
+    }
+    
+    #gyro-permission-popup.fade-out {
+      animation: fade-out 0.5s ease-out forwards;
+    }
+    
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fade-out {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    
+    .popup-content {
+      width: 80%;
+      max-width: 400px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border: 2px solid #FFFDE4;
+      padding: 30px;
+      text-align: center;
+      border-radius: 4px;
+      box-shadow: 0px 0px 15px rgba(249, 247, 220, 0.3);
+    }
+    
+    #gyro-permission-popup h3 {
+      font-family: "botw", sans-serif;
+      letter-spacing: 2px;
+      font-size: 28px;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #FFFDE4;
+      filter: drop-shadow(0px 0px 7px #000000);
+    }
+    
+    #gyro-permission-popup p {
+      font-family: "inter", sans-serif;
+      font-style: italic;
+      font-size: 15px;
+      margin-bottom: 30px;
+      line-height: 1.5;
+      filter: drop-shadow(0px 0px 7px #000000);
+    }
+    
+    #gyro-permission-popup .bouton-classique {
+      margin: 0 auto;
+    }
+  `;
+  
+  document.head.appendChild(style);
+}
+
+// Vérifier si le gyroscope est disponible et demander l'autorisation
 function requestGyroscopePermission() {
   if (window.DeviceOrientationEvent) {
     // Pour iOS 13+ qui nécessite une permission explicite
@@ -208,13 +311,21 @@ function requestGyroscopePermission() {
         .then(response => {
           if (response === 'granted') {
             window.addEventListener('deviceorientation', handleGyroscope);
+            console.log("Autorisation du gyroscope accordée");
+          } else {
+            console.log("Autorisation du gyroscope refusée");
           }
         })
-        .catch(console.error);
+        .catch(error => {
+          console.error("Erreur lors de la demande d'autorisation:", error);
+        });
     } else {
       // Pour les autres navigateurs qui ne nécessitent pas de permission
       window.addEventListener('deviceorientation', handleGyroscope);
+      console.log("Gyroscope activé sans besoin de permission");
     }
+  } else {
+    console.log("Le gyroscope n'est pas disponible sur cet appareil");
   }
 }
 
@@ -230,8 +341,13 @@ function init() {
   
   // Initialiser le gyroscope pour les appareils mobiles
   if (isMobileDevice()) {
-    // Demander l'autorisation du gyroscope au chargement
-    requestGyroscopePermission();
+    // Attendre un court instant pour que la page soit complètement chargée
+    setTimeout(() => {
+      createPermissionUI();
+    }, 1000);
+  } else {
+    // Démarrer immédiatement l'animation sur les appareils non mobiles
+    animationFrameId = requestAnimationFrame(updateParallax);
   }
   
   // Nettoyage lors du déchargement de la page
@@ -248,7 +364,6 @@ function init() {
 
 // Démarrer le parallaxe quand le DOM est entièrement chargé
 document.addEventListener('DOMContentLoaded', init);
-
 
 
                 // document.addEventListener("mousemove", (event) => {

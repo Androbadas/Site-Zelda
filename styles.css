@@ -1024,7 +1024,7 @@ h1, h2 {
 
 .character-image.link {
     bottom: 0;
-    left: 50%;
+    right: 25%;
     top: 10%;
     height: 90%;
 	transform: translateX(-50%);
@@ -1065,7 +1065,7 @@ h1, h2 {
 
 .character-image.ganondorf {
     bottom: 0;
-    left: 50%;
+    left: unset;
     top: 20%;
     height: 80%;
 	transform: translateX(-50%);
@@ -1622,7 +1622,7 @@ h1, h2 {
 
     .character-image.link {
         bottom: 0;
-        left: 50%;
+        right: 25%;
         top: 10%;
         height: 90%;
         transform: translateX(-50%);
@@ -2103,7 +2103,7 @@ h1, h2 {
 
     .character-image.link {
         bottom: 0;
-        left: 50%;
+        right: 25%;
         top: 10%;
         height: 90%;
         transform: translateX(-50%);
@@ -2718,7 +2718,7 @@ h1, h2 {
 
     .character-image.link {
         bottom: 0;
-        left: 50%;
+        right: 0;
         top: 10%;
         height: 90%;
         transform: translateX(-50%);

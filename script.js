@@ -32,7 +32,7 @@ const config = {
   gyroscope: {
     enabled: true,
     sensitivityX: 10,      // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
-    sensitivityY: 10,      // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
+    sensitivityY: 50,      // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     maxAngleX: 45,         // Angle maximum en degrés pour l'axe X
     maxAngleY: 45,         // Angle maximum en degrés pour l'axe Y
     smoothingFactor: 0.2,  // Facteur de lissage pour les mouvements du gyroscope

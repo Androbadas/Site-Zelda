@@ -2301,39 +2301,39 @@ h1, h2 {
 }
 
 @media only screen and (max-width: 400px) {
-        /* Elements */
+    /* Elements */
 
-        p {
-            font-family: "inter";
-            font-style: italic;
-            font-size: 15px;
-            filter: drop-shadow(0px 0px 7px #000000);
-            letter-spacing: 2%;
-        }
-        
-        h1, h2 {
-            font-family: "botw";
-            letter-spacing: 2px;
-            line-height: 90%;
-            font-weight: 400;
-            font-size: 40px;
-            filter: drop-shadow(0px 0px 7px #000000);
-            margin: 0;
-            padding: 0;
-        }
+    p {
+        font-family: "inter";
+        font-style: italic;
+        font-size: 15px;
+        filter: drop-shadow(0px 0px 7px #000000);
+        letter-spacing: 2%;
+    }
+    
+    h1, h2 {
+        font-family: "botw";
+        letter-spacing: 2px;
+        line-height: 90%;
+        font-weight: 400;
+        font-size: 40px;
+        filter: drop-shadow(0px 0px 7px #000000);
+        margin: 0;
+        padding: 0;
+    }
 
 
-        .bouton-classique,
-        .nav-button,
-        .nav-button.explorer,
-        .nav-button.trailer:not(.active):hover .nav-button-text.trailer,
-        .nav-button.trailer:not(.active):hover .nav-button-img.trailer,
-        .sell-button:hover {
-            cursor: default;
-        }
-        
+    .bouton-classique,
+    .nav-button,
+    .nav-button.explorer,
+    .nav-button.trailer:not(.active):hover .nav-button-text.trailer,
+    .nav-button.trailer:not(.active):hover .nav-button-img.trailer,
+    .sell-button:hover {
+        cursor: default;
+    }
+    
 
-            /* first-section */
+        /* first-section */
 
     #logo-middle-div img {
         width: 210px;
@@ -2391,243 +2391,243 @@ h1, h2 {
     } 
 
 
-        /* Section intro */
+    /* Section intro */
 
-        #intro-section {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 50px;
-            background: 
-                linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%), 
-                linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%), 
-                url("assets/images/backgroud_1.png") top left;
-            background-repeat: repeat;
-        }
-    
-    
-        #intro-section video {
-            max-width: 95%;
-            border-radius: 1px;
-            outline: 2px solid #FFFDE4;
-            box-shadow: 0px 0px 20px rgba(249, 247, 220, 0.3);
-        }
-    
-    
-        #intro-text-container {
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-        }
-    
-        #intro-text-container p {
-            width: 90%;
-            line-height: 1.5;
-        }
-    
-    
-        /* Section Argument */
+    #intro-section {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        background: 
+            linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%), 
+            linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 50%), 
+            url("assets/images/backgroud_1.png") top left;
+        background-repeat: repeat;
+    }
 
-        .title-slide-header.argument {
-            margin-top: 0px;
-        }
-    
-        .nav-button.argument {
-            width: 85px;
-            height: 85px;
-            justify-content: center;
-            align-items: center;
-            margin: 0 10px;
-            opacity: 0.5;
-            visibility: visible;
-        }
-        .nav-button.argument.active {
-            opacity: 1;
-            visibility: visible;
-        }
-    
-        .nav-button-text.argument.active {
-            filter:drop-shadow(0px 0px 8px rgba(249, 247, 220, 0.4));
-            cursor: default;
-        }
-    
-        .nav-button-img.argument.active {
-            outline: 2px solid #FFFDE4;
-            box-shadow: 0px 0px 20px rgba(249, 247, 220, 0.3);
-            cursor: default;
-        }
-    
-        .nav-button-text.argument {
-            padding-left: 0;
-            font-size: 15px;
-        }
-    
-    
-        .title-slider-container.argument {
-            position: absolute;
-            top: 120px;
-            right: 50%;
-            transform: translateX(50%);
-            width: 90%;
-            height: 200px;
-            z-index: 3;
-            margin-right: 0;
-        }
-    
-        .title-slide.argument {
-            width: inherit;
-            height: 100%;
-        }
-        
-        .title-slider-container.argument {
-            position: absolute;
-            top: 30px;
-            right: 50%;
-            transform: translateX(50%);
-            width: 300px;
-            height: 200px;
-            z-index: 3;
-            margin-right: 0;
-        }
 
-        .nav-explorer {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            top: 0;
-            left: 5%;
-            transform: unset;
-            width: 45px;
-            height: 100%;
-            z-index: 3;
-            visibility: hidden;
-            opacity: 0;
-            filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-            gap: 8%;
-        }
+    #intro-section video {
+        max-width: 95%;
+        border-radius: 1px;
+        outline: 2px solid #FFFDE4;
+        box-shadow: 0px 0px 20px rgba(249, 247, 220, 0.3);
+    }
 
-        
-        /* section pouvoir */
-    
-    
-        #power-title {
-            height: 60%;
-        }
-    
-        #power-title-container {
-            width: 90%;
-            height: auto;
-            margin-top: 20%;
-        }
-    
-        #power-slider-container {
-            height: 40%;
-        }
-    
-        .title-slider-container.power {
-            position: relative;
-            display: flex;
-            width: 100%;
-            height: 50%;
-            justify-content: center;
-        }
-        .title-slide.power {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 0;
-            min-width: 0px;
-            max-width: 600px;
-            padding-left: 10px;
-            padding-right: 10px;
-            height: 100%;
-            justify-content: center;
-            align-items: center;
-        }
-    
-        .title.power {
-            font-size: 35px;
-            text-align: center;
-        }
-        
 
-        
-        .title-slide-header.power {
-            font-family: "inter";
-            font-weight: 700;
-            font-size: 18px;
-            text-align: center;
-            width: auto;
-            height: 18px;
-            margin-bottom: 10px;
-        }
+    #intro-text-container {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+    }
 
-        .title-slide-text.power {
-            font-size: 15px;
-            font-style: italic;
-            text-align: center;
-            width: auto;
-            height: 60px;
-            margin-top: 0;
-        } 
+    #intro-text-container p {
+        width: 90%;
+        line-height: 1.5;
+    }
 
-        .nav-power-container {
-            position: relative;
-            display: block;
-            width: 100%;
-            height: 50%;
-            justify-content: center;
-        }
 
-        .nav-power {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
+    /* Section Argument */
+
+    .title-slide-header.argument {
+        margin-top: 0px;
+    }
+
+    .nav-button.argument {
+        width: 85px;
+        height: 85px;
+        justify-content: center;
+        align-items: center;
+        margin: 0 10px;
+        opacity: 0.5;
+        visibility: visible;
+    }
+    .nav-button.argument.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-button-text.argument.active {
+        filter:drop-shadow(0px 0px 8px rgba(249, 247, 220, 0.4));
+        cursor: default;
+    }
+
+    .nav-button-img.argument.active {
+        outline: 2px solid #FFFDE4;
+        box-shadow: 0px 0px 20px rgba(249, 247, 220, 0.3);
+        cursor: default;
+    }
+
+    .nav-button-text.argument {
+        padding-left: 0;
+        font-size: 15px;
+    }
+
+
+    .title-slider-container.argument {
+        position: absolute;
+        top: 120px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 90%;
+        height: 200px;
+        z-index: 3;
+        margin-right: 0;
+    }
+
+    .title-slide.argument {
+        width: inherit;
+        height: 100%;
+    }
+    
+    .title-slider-container.argument {
+        position: absolute;
+        top: 30px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 300px;
+        height: 200px;
+        z-index: 3;
+        margin-right: 0;
+    }
+
+    .nav-explorer {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0;
+        left: 5%;
+        transform: unset;
+        width: 45px;
+        height: 100%;
+        z-index: 3;
+        visibility: hidden;
+        opacity: 0;
+        filter: blur(10px);
+        align-items: center;
+        justify-content: center;
+        gap: 8%;
+    }
 
     
-        /* Section personnage */
+    /* section pouvoir */
+
+
+    #power-title {
+        height: 60%;
+    }
+
+    #power-title-container {
+        width: 90%;
+        height: auto;
+        margin-top: 20%;
+    }
+
+    #power-slider-container {
+        height: 40%;
+    }
+
+    .title-slider-container.power {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 50%;
+        justify-content: center;
+    }
+    .title-slide.power {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        min-width: 0px;
+        max-width: 600px;
+        padding-left: 10px;
+        padding-right: 10px;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .title.power {
+        font-size: 35px;
+        text-align: center;
+    }
     
-        .nav-character {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            top: unset;
-            left: unset;
-            width: 100%;
-            height: 80px;
-            margin-bottom: 120px;
-            align-items: center;
-            justify-content: center;
-            align-self: flex-end;
-            z-index: 5;
-            gap: 20px;
-        }
-        
-        #slide-zelda {
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+
     
+    .title-slide-header.power {
+        font-family: "inter";
+        font-weight: 700;
+        font-size: 18px;
+        text-align: center;
+        width: auto;
+        height: 18px;
+        margin-bottom: 10px;
+    }
+
+    .title-slide-text.power {
+        font-size: 15px;
+        font-style: italic;
+        text-align: center;
+        width: auto;
+        height: 60px;
+        margin-top: 0;
+    } 
+
+    .nav-power-container {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 50%;
+        justify-content: center;
+    }
+
+    .nav-power {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    /* Section personnage */
+
+    .nav-character {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        top: unset;
+        left: unset;
+        width: 100%;
+        height: 80px;
+        margin-bottom: 120px;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-end;
+        z-index: 5;
+        gap: 20px;
+    }
     
-        .title-slide.character {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            height: auto;
-            justify-content: center;
-            align-items: center;
-            z-index: 5;
-            align-self: center;
-        }
+    #slide-zelda {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .title-slide.character {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+        z-index: 5;
+        align-self: center;
+    }
     
         
     #title-zelda {
@@ -2797,122 +2797,122 @@ h1, h2 {
 
     
         
-        /* section vente */
-    
-        #sell-section {
-            min-height:120vh;
-            height: 100%;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 100px;
-        }
-    
+    /* section vente */
 
-        #sell-title-container {
-            width: 80%;
-            height: auto;
-            margin-left: 0px;
-        }
-    
-        #img-title {
-            width: 250px;
-            height: auto;
-            margin-top: 71px;
-            margin-bottom: 10px;
-        }
-    
-        #title-text-sell {
-            text-align: center;
-            width: 100%;
-            height: auto;
-            margin-top: 10px;
-            margin-bottom: 0;
-        }
-    
-        #all-sell-button-container {
-            flex-direction: column;
-            width: 250px;
-            height: auto;
-            margin-right: 0px;
-            gap: 25px;
-            margin-bottom: 60px;
-        }
-    
-    
-        .little-button-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            width: unset;
-            height: auto;
-            gap: 25px;
-        }
+    #sell-section {
+        min-height:120vh;
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 100px;
+    }
 
-        .sell-button {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            outline: 1.2px solid #F9F7DC;
-            background-color: rgba(0, 0, 0, 0.6);
-            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
-            padding: 30px 25px;
-            min-width: 250px;
-            width: fit-content;
-            max-width: 535px;
-            max-height: 80px;
-            overflow: visible;
-            margin: 0;
-        }
-    
 
-        .sell-button:hover {
-            box-shadow: 0px 0px 15px rgba(249, 247, 220, 1);
-            cursor: pointer;
-        }
-    
-        .sell-button p {
-            font-size: 14px;
-        }
-    
-        #sub-text-button {
-            font-size: 12px;
-            padding-left: 0px;
-        }
-    
-        #amiibo-text {
-            font-size: 17px;
-        }
-    
-    
-    
-        #img-collector {
-            display: none;
-        }
-    
-        #img-switch-oled {
-            display: none;
-        }
-    
-        #img-amiibo {
-            position: absolute;
-            bottom: 0px;
-            right: 10px;
-        }
-    
-        #img-accessoires {
-            position: absolute;
-            bottom: 5px;
-            left: 140px;
-        }
-    
-        #amiibo {
-            padding-top: 28px;
-            padding-bottom: 34px;
-        }
+    #sell-title-container {
+        width: 80%;
+        height: auto;
+        margin-left: 0px;
+    }
+
+    #img-title {
+        width: 250px;
+        height: auto;
+        margin-top: 71px;
+        margin-bottom: 10px;
+    }
+
+    #title-text-sell {
+        text-align: center;
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+
+    #all-sell-button-container {
+        flex-direction: column;
+        width: 250px;
+        height: auto;
+        margin-right: 0px;
+        gap: 25px;
+        margin-bottom: 60px;
+    }
+
+
+    .little-button-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: unset;
+        height: auto;
+        gap: 25px;
+    }
+
+    .sell-button {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        outline: 1.2px solid #F9F7DC;
+        background-color: rgba(0, 0, 0, 0.6);
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+        padding: 30px 25px;
+        min-width: 250px;
+        width: fit-content;
+        max-width: 535px;
+        max-height: 80px;
+        overflow: visible;
+        margin: 0;
+    }
+
+
+    .sell-button:hover {
+        box-shadow: 0px 0px 15px rgba(249, 247, 220, 1);
+        cursor: pointer;
+    }
+
+    .sell-button p {
+        font-size: 14px;
+    }
+
+    #sub-text-button {
+        font-size: 12px;
+        padding-left: 0px;
+    }
+
+    #amiibo-text {
+        font-size: 17px;
+    }
+
+
+
+    #img-collector {
+        display: none;
+    }
+
+    #img-switch-oled {
+        display: none;
+    }
+
+    #img-amiibo {
+        position: absolute;
+        bottom: 0px;
+        right: 10px;
+    }
+
+    #img-accessoires {
+        position: absolute;
+        bottom: 5px;
+        left: 140px;
+    }
+
+    #amiibo {
+        padding-top: 28px;
+        padding-bottom: 34px;
+    }
 }
 
 

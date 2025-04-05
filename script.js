@@ -31,18 +31,20 @@ const config = {
   // Configuration pour le gyroscope
   gyroscope: {
     enabled: true,
-    sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
-    sensitivityY: 10, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
-    maxAngleX: 45,    // Angle maximum en degrés pour l'axe X
-    maxAngleY: 45,    // Angle maximum en degrés pour l'axe Y
-    smoothingFactor: 0.2 // Facteur de lissage pour les mouvements du gyroscope
+    sensitivityX: 10,      // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
+    sensitivityY: 10,      // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
+    maxAngleX: 45,         // Angle maximum en degrés pour l'axe X
+    maxAngleY: 45,         // Angle maximum en degrés pour l'axe Y
+    smoothingFactor: 0.2,  // Facteur de lissage pour les mouvements du gyroscope
+    referenceAngleBeta: 45, // Angle de référence "neutre" pour beta (position naturelle)
+    referenceAngleGamma: 0  // Angle de référence "neutre" pour gamma
   }
 };
 
 // Variables pour stocker les positions actuelles et cibles
 let mouseX = 0, mouseY = 0;
 let gyroX = 0, gyroY = 0;
-let currentX = 0, currentY = 0;
+let currentX = window.innerWidth / 2, currentY = window.innerHeight / 2; // Position initiale au centre
 let animationFrameId = null;
 let edgeThreshold = 0.2; // Seuil pour déterminer la proximité au bord (0.2 = 20% de la largeur/hauteur)
 let isUsingGyro = false; // Pour savoir si on utilise le gyroscope ou la souris
@@ -102,9 +104,13 @@ function handleGyroscope(event) {
   if (isMobileDevice() || !hasMouseMoved) {
     isUsingGyro = true;
     
-    // Limiter les angles aux valeurs configurées
-    const betaAngle = Math.max(-config.gyroscope.maxAngleX, Math.min(config.gyroscope.maxAngleX, event.beta));
-    const gammaAngle = Math.max(-config.gyroscope.maxAngleY, Math.min(config.gyroscope.maxAngleY, event.gamma));
+    // Calculer la différence par rapport à l'angle de référence
+    const betaDiff = event.beta - config.gyroscope.referenceAngleBeta;
+    const gammaDiff = event.gamma - config.gyroscope.referenceAngleGamma;
+    
+    // Limiter les différences aux valeurs configurées
+    const clampedBetaDiff = Math.max(-config.gyroscope.maxAngleX, Math.min(config.gyroscope.maxAngleX, betaDiff));
+    const clampedGammaDiff = Math.max(-config.gyroscope.maxAngleY, Math.min(config.gyroscope.maxAngleY, gammaDiff));
     
     // Convertir les angles en position relative à l'écran
     // Beta contrôle l'axe Y (inclinaison avant/arrière)
@@ -113,8 +119,9 @@ function handleGyroscope(event) {
     const windowHeight = window.innerHeight;
     
     // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
-    gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
-    gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
+    // Centrer quand l'appareil est à la position de référence
+    gyroY = windowHeight / 2 + (clampedBetaDiff / config.gyroscope.maxAngleX) * (windowHeight / 2);
+    gyroX = windowWidth / 2 + (clampedGammaDiff / config.gyroscope.maxAngleY) * (windowWidth / 2);
     
     // Démarrer l'animation si elle n'est pas déjà en cours
     if (!animationFrameId) {
@@ -239,6 +246,61 @@ function checkGyroscopeAvailability() {
   }
 }
 
+// Calibrer les angles de référence du gyroscope
+function calibrateGyroscope() {
+  // Ne créer le bouton que sur les appareils mobiles
+  if (isMobileDevice() && config.gyroscope.enabled) {
+    const calibrateButton = document.createElement('button');
+    calibrateButton.innerText = 'Calibrer le gyroscope';
+    calibrateButton.style.position = 'fixed';
+    calibrateButton.style.bottom = '10px';
+    calibrateButton.style.right = '10px';
+    calibrateButton.style.zIndex = '1000';
+    calibrateButton.style.padding = '10px';
+    calibrateButton.style.backgroundColor = '#2ecc71';
+    calibrateButton.style.color = 'white';
+    calibrateButton.style.border = 'none';
+    calibrateButton.style.borderRadius = '5px';
+    calibrateButton.style.cursor = 'pointer';
+    
+    calibrateButton.addEventListener('click', () => {
+      // Attacher un écouteur d'événement ponctuel pour lire les valeurs actuelles
+      const calibrationHandler = (event) => {
+        // Définir les angles actuels comme références
+        config.gyroscope.referenceAngleBeta = event.beta;
+        config.gyroscope.referenceAngleGamma = event.gamma;
+        
+        // Afficher un message de confirmation
+        const confirmationMsg = document.createElement('div');
+        confirmationMsg.innerText = 'Calibration réussie!';
+        confirmationMsg.style.position = 'fixed';
+        confirmationMsg.style.top = '50%';
+        confirmationMsg.style.left = '50%';
+        confirmationMsg.style.transform = 'translate(-50%, -50%)';
+        confirmationMsg.style.backgroundColor = 'rgba(46, 204, 113, 0.8)';
+        confirmationMsg.style.color = 'white';
+        confirmationMsg.style.padding = '20px';
+        confirmationMsg.style.borderRadius = '10px';
+        confirmationMsg.style.zIndex = '2000';
+        
+        document.body.appendChild(confirmationMsg);
+        
+        // Supprimer le message après 2 secondes
+        setTimeout(() => {
+          document.body.removeChild(confirmationMsg);
+        }, 2000);
+        
+        // Supprimer l'écouteur après usage
+        window.removeEventListener('deviceorientation', calibrationHandler);
+      };
+      
+      window.addEventListener('deviceorientation', calibrationHandler, { once: true });
+    });
+    
+    document.body.appendChild(calibrateButton);
+  }
+}
+
 // Initialisation
 function init() {
   setupElements();
@@ -252,6 +314,8 @@ function init() {
   // Initialiser le gyroscope pour les appareils mobiles
   if (isMobileDevice()) {
     checkGyroscopeAvailability();
+    // Ajouter le bouton de calibration après l'initialisation du gyroscope
+    calibrateGyroscope();
   }
   
   // Nettoyage lors du déchargement de la page
@@ -268,7 +332,6 @@ function init() {
 
 // Démarrer le parallaxe
 init();
-
 
 
 
@@ -297,14 +360,25 @@ init();
 //     smoothingFactor: 0.05,
 //     blurEnabled: false, // Désactivé pour l'arrière-plan par défaut
 //     maxBlur: 0.5
+//   },
+//   // Configuration pour le gyroscope
+//   gyroscope: {
+//     enabled: true,
+//     sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
+//     sensitivityY: 50, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
+//     maxAngleX: 45,    // Angle maximum en degrés pour l'axe X
+//     maxAngleY: 45,    // Angle maximum en degrés pour l'axe Y
+//     smoothingFactor: 0.2 // Facteur de lissage pour les mouvements du gyroscope
 //   }
 // };
 
 // // Variables pour stocker les positions actuelles et cibles
 // let mouseX = 0, mouseY = 0;
-// let currentX = 0, currentY = 0;
+// let gyroX = 0, gyroY = 0;
+// let currentX = 45, currentY = 0;
 // let animationFrameId = null;
 // let edgeThreshold = 0.2; // Seuil pour déterminer la proximité au bord (0.2 = 20% de la largeur/hauteur)
+// let isUsingGyro = false; // Pour savoir si on utilise le gyroscope ou la souris
 
 // // Ajouter des transitions CSS aux éléments
 // function setupElements() {
@@ -342,6 +416,7 @@ init();
 
 // // Mettre à jour la position de la souris
 // function updateMousePosition(event) {
+//   isUsingGyro = false; // Priorité à la souris si les deux sont utilisés
 //   mouseX = event.clientX;
 //   mouseY = event.clientY;
   
@@ -351,14 +426,59 @@ init();
 //   }
 // }
 
+// // Gérer les données du gyroscope
+// function handleGyroscope(event) {
+//   if (!config.gyroscope.enabled) return;
+  
+//   // Ne traiter que les événements du gyroscope si nous n'utilisons pas la souris
+//   // Ou si nous sommes sur mobile (pas de souris)
+//   if (isMobileDevice() || !hasMouseMoved) {
+//     isUsingGyro = true;
+    
+//     // Limiter les angles aux valeurs configurées
+//     const betaAngle = Math.max(-config.gyroscope.maxAngleX, Math.min(config.gyroscope.maxAngleX, event.beta));
+//     const gammaAngle = Math.max(-config.gyroscope.maxAngleY, Math.min(config.gyroscope.maxAngleY, event.gamma));
+    
+//     // Convertir les angles en position relative à l'écran
+//     // Beta contrôle l'axe Y (inclinaison avant/arrière)
+//     // Gamma contrôle l'axe X (inclinaison gauche/droite)
+//     const windowWidth = window.innerWidth;
+//     const windowHeight = window.innerHeight;
+    
+//     // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
+//     gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
+//     gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
+    
+//     // Démarrer l'animation si elle n'est pas déjà en cours
+//     if (!animationFrameId) {
+//       animationFrameId = requestAnimationFrame(updateParallax);
+//     }
+//   }
+// }
+
+// // Détecter si l'appareil est mobile
+// function isMobileDevice() {
+//   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+// }
+
+// // Variable pour suivre si la souris a bougé
+// let hasMouseMoved = false;
+
 // // Mettre à jour l'effet de parallaxe avec lissage et flou directionnel
 // function updateParallax() {
 //   const windowWidth = window.innerWidth;
 //   const windowHeight = window.innerHeight;
   
+//   // Utiliser soit la position de la souris, soit celle du gyroscope
+//   const targetX = isUsingGyro ? gyroX : mouseX;
+//   const targetY = isUsingGyro ? gyroY : mouseY;
+  
+//   // Appliquer un lissage différent selon la source d'entrée
+//   const smoothing = isUsingGyro ? config.gyroscope.smoothingFactor : 0.1;
+  
 //   // Appliquer un lissage à la position actuelle
-//   currentX += (mouseX - currentX) * 0.1;
-//   currentY += (mouseY - currentY) * 0.1;
+//   currentX += (targetX - currentX) * smoothing;
+//   currentY += (targetY - currentY) * smoothing;
   
 //   // Calculer la proximité au bord et la direction
 //   const edge = calculateEdgeProximity(currentX, currentY, windowWidth, windowHeight);
@@ -414,21 +534,78 @@ init();
 //   animationFrameId = requestAnimationFrame(updateParallax);
 // }
 
+// // Vérifier si le gyroscope est disponible et demander l'autorisation
+// function checkGyroscopeAvailability() {
+//   if (window.DeviceOrientationEvent) {
+//     // Pour iOS 13+ qui nécessite une permission explicite
+//     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+//       // Créer un bouton pour demander la permission
+//       const permissionButton = document.createElement('button');
+//       permissionButton.innerText = 'Activer le gyroscope';
+//       permissionButton.style.position = 'fixed';
+//       permissionButton.style.top = '10px';
+//       permissionButton.style.left = '10px';
+//       permissionButton.style.zIndex = '1000';
+//       permissionButton.style.padding = '10px';
+//       permissionButton.style.backgroundColor = '#3498db';
+//       permissionButton.style.color = 'white';
+//       permissionButton.style.border = 'none';
+//       permissionButton.style.borderRadius = '5px';
+//       permissionButton.style.cursor = 'pointer';
+      
+//       permissionButton.addEventListener('click', () => {
+//         DeviceOrientationEvent.requestPermission()
+//           .then(response => {
+//             if (response === 'granted') {
+//               window.addEventListener('deviceorientation', handleGyroscope);
+//               document.body.removeChild(permissionButton);
+//             }
+//           })
+//           .catch(console.error);
+//       });
+      
+//       document.body.appendChild(permissionButton);
+//     } else {
+//       // Pour les autres navigateurs qui ne nécessitent pas de permission
+//       window.addEventListener('deviceorientation', handleGyroscope);
+//     }
+//   }
+// }
+
 // // Initialisation
 // function init() {
 //   setupElements();
-//   document.addEventListener("mousemove", updateMousePosition);
+  
+//   // Écouter les événements de la souris
+//   document.addEventListener("mousemove", (e) => {
+//     hasMouseMoved = true;
+//     updateMousePosition(e);
+//   });
+  
+//   // Initialiser le gyroscope pour les appareils mobiles
+//   if (isMobileDevice()) {
+//     checkGyroscopeAvailability();
+//   }
   
 //   // Nettoyage lors du déchargement de la page
 //   window.addEventListener("beforeunload", () => {
 //     if (animationFrameId) {
 //       cancelAnimationFrame(animationFrameId);
 //     }
+    
+//     // Supprimer les écouteurs d'événements
+//     document.removeEventListener("mousemove", updateMousePosition);
+//     window.removeEventListener('deviceorientation', handleGyroscope);
 //   });
 // }
 
 // // Démarrer le parallaxe
 // init();
+
+
+
+
+
 
 
 

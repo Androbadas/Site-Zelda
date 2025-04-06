@@ -1,5 +1,7 @@
+
 // Effet de paralax
 // Configuration des éléments parallaxe
+
 const config = {
   background: {
     elements: [
@@ -29,6 +31,7 @@ const config = {
   gyroscope: {
     enabled: true,
     sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
+    sensitivityY: 10, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     sensitivityY: 50, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     maxAngleX: 45,    // Angle maximum en degrés pour l'axe X
     maxAngleY: 45,    // Angle maximum en degrés pour l'axe Y
@@ -49,37 +52,6 @@ let initialGyroX = null;
 let initialGyroY = null;
 let gyroInitialized = false;
 
-// Créer le pseudo-élément ::before pour background-paralax via CSS
-function setupBackgroundParalaxBlur() {
-  // Créer une balise style
-  const style = document.createElement('style');
-  
-  // Définir le CSS pour le pseudo-élément ::before
-  style.textContent = `
-    #background-paralax {
-      position: relative;
-      z-index: 0;
-    }
-    
-    #background-paralax::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      filter: blur(0px);
-      z-index: -1;
-      transition: filter 300ms ease-out;
-      display: none; /* Masqué par défaut, visible seulement avec gyroscope */
-    }
-  `;
-  
-  // Ajouter la balise style au head du document
-  document.head.appendChild(style);
-}
-
 // Ajouter des transitions CSS aux éléments
 function setupElements() {
   // Combiner tous les éléments
@@ -92,9 +64,6 @@ function setupElements() {
       element.style.transition = "transform 200ms cubic-bezier(0.33, 1, 0.68, 1), filter 300ms ease-out";
     }
   });
-  
-  // Configurer le pseudo-élément pour background-paralax
-  setupBackgroundParalaxBlur();
 }
 
 // Calculer la proximité au bord (0 = centre, 1 = bord)
@@ -156,6 +125,9 @@ function handleGyroscope(event) {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
+    // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
+    gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
+    gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
     // Normaliser les valeurs du gyroscope en tenant compte de la position initiale
     // Calculer le delta par rapport à la position initiale
     const deltaY = betaAngle - initialGyroY;
@@ -208,20 +180,22 @@ function updateParallax() {
     const element = document.getElementById(elementId);
     if (!element) return;
     
-    // Le parallaxe reste inchangé
+    // Appliquer le parallaxe
     const offsetX = (currentX - windowWidth / config.character.centerDivisorX) * config.character.moveFactorX;
     const offsetY = (currentY - windowHeight / config.character.centerDivisorY) * config.character.moveFactorY;
     
     element.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     
-    // Pour link-paralax, on ne touche PAS au filtre du tout
-    if (elementId === "link-paralax") {
-        // Ne pas modifier le style.filter pour permettre à l'isolation CSS de fonctionner
-    } else if (config.character.blurEnabled && edgeEffect > 0) {
-        const blurAmount = edgeEffect * config.character.maxBlur;
-        element.style.filter = `blur(${blurAmount}px)`;
+    // Appliquer le flou directionnel si activé
+    if (config.character.blurEnabled && edgeEffect > 0) {
+      // Calculer l'intensité du flou
+      const blurAmount = edgeEffect * config.character.maxBlur;
+      
+      // Appliquer un flou directionnel (du côté opposé à la souris)
+      // Nous utilisons un flou standard car le flou directionnel CSS n'est pas bien supporté
+      element.style.filter = `blur(${blurAmount}px)`;
     } else {
-        element.style.filter = 'none';
+      element.style.filter = 'none';
     }
   });
   
@@ -235,97 +209,8 @@ function updateParallax() {
     
     element.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     
-    // Cas spécial pour background-paralax avec gyroscope
-    if (elementId === "background-paralax") {
-      // Récupérer le style sheet pour modifier le pseudo-élément
-      const styleSheet = document.styleSheets[document.styleSheets.length - 1];
-      
-      // Gérer l'affichage du pseudo-élément en fonction de l'utilisation du gyroscope
-      let beforeRuleIndex = -1;
-      for (let i = 0; i < styleSheet.cssRules.length; i++) {
-        if (styleSheet.cssRules[i].selectorText === '#background-paralax::before') {
-          beforeRuleIndex = i;
-          break;
-        }
-      }
-      
-      if (isUsingGyro) {
-        // Si on utilise le gyroscope, afficher le pseudo-élément et appliquer le flou
-        if (config.background.blurEnabled && edgeEffect > 0) {
-          const blurAmount = edgeEffect * config.background.maxBlur;
-          
-          // Mettre à jour ou créer la règle pour le pseudo-élément
-          if (beforeRuleIndex >= 0) {
-            styleSheet.deleteRule(beforeRuleIndex);
-          }
-          
-          styleSheet.insertRule(`#background-paralax::before { 
-            content: ""; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: inherit; 
-            filter: blur(${blurAmount}px); 
-            z-index: -1; 
-            transition: filter 300ms ease-out;
-            display: block; 
-          }`, styleSheet.cssRules.length);
-          
-          // Supprimer le flou sur l'élément principal
-          element.style.filter = 'none';
-        } else {
-          // Pas de flou nécessaire mais conserver le pseudo-élément visible
-          if (beforeRuleIndex >= 0) {
-            styleSheet.deleteRule(beforeRuleIndex);
-          }
-          
-          styleSheet.insertRule(`#background-paralax::before { 
-            content: ""; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: inherit; 
-            filter: blur(0px); 
-            z-index: -1;
-            display: block; 
-          }`, styleSheet.cssRules.length);
-          
-          element.style.filter = 'none';
-        }
-      } else {
-        // Si on n'utilise pas le gyroscope, masquer le pseudo-élément et appliquer le flou directement
-        if (beforeRuleIndex >= 0) {
-          styleSheet.deleteRule(beforeRuleIndex);
-        }
-        
-        styleSheet.insertRule(`#background-paralax::before { 
-          content: ""; 
-          position: absolute; 
-          top: 0; 
-          left: 0; 
-          width: 100%; 
-          height: 100%; 
-          background: inherit; 
-          filter: blur(0px); 
-          z-index: -1;
-          display: none; 
-        }`, styleSheet.cssRules.length);
-        
-        // Appliquer le flou directement sur l'élément comme dans le code original
-        if (config.background.blurEnabled && edgeEffect > 0) {
-          const blurAmount = edgeEffect * config.background.maxBlur;
-          element.style.filter = `blur(${blurAmount}px)`;
-        } else {
-          element.style.filter = 'none';
-        }
-      }
-    }
-    // Pour les autres éléments d'arrière-plan, comportement normal
-    else if (config.background.blurEnabled && edgeEffect > 0) {
+    // Appliquer le flou directionnel si activé pour l'arrière-plan
+    if (config.background.blurEnabled && edgeEffect > 0) {
       const blurAmount = edgeEffect * config.background.maxBlur;
       element.style.filter = `blur(${blurAmount}px)`;
     } else {
@@ -465,6 +350,8 @@ function init() {
 
 // Démarrer le parallaxe quand le DOM est entièrement chargé
 document.addEventListener('DOMContentLoaded', init);
+
+
                 // document.addEventListener("mousemove", (event) => {
                 //   const parallaxElement = document.getElementById("link-paralax");
                 //   if (!parallaxElement) return;
@@ -583,7 +470,3 @@ sliderInteraction();
 });
 
 // pas oublier le défilement automatique des sliders
-
-
-
-

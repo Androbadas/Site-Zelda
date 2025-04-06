@@ -357,6 +357,8 @@ h1, h2 {
 }
 
 #link-paralax {
+    isolation: isolate; /* Crée un nouveau contexte de pile */
+    filter: blur(0);
     position: absolute; 
     bottom: 0; 
     right: 0; 

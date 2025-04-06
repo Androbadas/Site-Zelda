@@ -30,7 +30,7 @@ const config = {
   gyroscope: {
     enabled: true,
     sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
-    sensitivityY: 10, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
+    sensitivityY: 50, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     maxAngleX: 45,    // Angle maximum en degrés pour l'axe X
     maxAngleY: 45,    // Angle maximum en degrés pour l'axe Y
     smoothingFactor: 0.2 // Facteur de lissage pour les mouvements du gyroscope
@@ -44,6 +44,11 @@ let currentX = 0, currentY = 0;
 let animationFrameId = null;
 let edgeThreshold = 0.2; // Seuil pour déterminer la proximité au bord (0.2 = 20% de la largeur/hauteur)
 let isUsingGyro = false; // Pour savoir si on utilise le gyroscope ou la souris
+
+// Ajout des variables pour la position initiale du gyroscope
+let initialGyroX = null;
+let initialGyroY = null;
+let gyroInitialized = false;
 
 // Ajouter des transitions CSS aux éléments
 function setupElements() {
@@ -104,15 +109,28 @@ function handleGyroscope(event) {
     const betaAngle = Math.max(-config.gyroscope.maxAngleX, Math.min(config.gyroscope.maxAngleX, event.beta));
     const gammaAngle = Math.max(-config.gyroscope.maxAngleY, Math.min(config.gyroscope.maxAngleY, event.gamma));
     
+    // Enregistrer la position initiale au premier événement après validation
+    if (!gyroInitialized && initialGyroX === null && initialGyroY === null) {
+      initialGyroX = gammaAngle;
+      initialGyroY = betaAngle;
+      gyroInitialized = true;
+      console.log("Position initiale du gyroscope enregistrée:", initialGyroX, initialGyroY);
+    }
+    
     // Convertir les angles en position relative à l'écran
     // Beta contrôle l'axe Y (inclinaison avant/arrière)
     // Gamma contrôle l'axe X (inclinaison gauche/droite)
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
-    // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
-    gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
-    gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
+    // Normaliser les valeurs du gyroscope en tenant compte de la position initiale
+    // Calculer le delta par rapport à la position initiale
+    const deltaY = betaAngle - initialGyroY;
+    const deltaX = gammaAngle - initialGyroX;
+    
+    // Convertir ces deltas en coordonnées d'écran
+    gyroY = ((deltaY + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
+    gyroX = ((deltaX + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
     
     // Démarrer l'animation si elle n'est pas déjà en cours
     if (!animationFrameId) {
@@ -262,6 +280,11 @@ function createPermissionUI() {
 
 // Vérifier si le gyroscope est disponible et demander l'autorisation
 function requestGyroscopePermission() {
+  // Réinitialiser les valeurs initiales lors d'une nouvelle demande d'autorisation
+  initialGyroX = null;
+  initialGyroY = null;
+  gyroInitialized = false;
+  
   if (window.DeviceOrientationEvent) {
     // Pour iOS 13+ qui nécessite une permission explicite
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {

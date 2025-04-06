@@ -199,107 +199,65 @@ function updateParallax() {
   animationFrameId = requestAnimationFrame(updateParallax);
 }
 
-// NOUVELLE FONCTION - Créer une popup adaptée au style Zelda TOTK
+// NOUVELLE FONCTION - Créer une popup adaptée au style Zelda TOTK uniquement pour mobile et tablette
 function createPermissionUI() {
   // Si la popup existe déjà, ne pas la recréer
   if (document.getElementById('gyro-permission-popup')) return;
   
-  // Créer l'élément de popup
-  const popup = document.createElement('div');
-  popup.id = 'gyro-permission-popup';
+  // Vérifier si l'appareil est un mobile ou une tablette
+  const isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
-  // Créer le contenu de la popup
-  popup.innerHTML = `
-    <div class="popup-content">
-      <h3>EFFET PARALLAXE</h3>
-      <p>Pour une expérience immersive avec votre appareil mobile, autorisez l'accès au gyroscope.</p>
-      <div class="bouton-classique" id="gyro-permission-btn">AUTORISER</div>
-    </div>
-  `;
-  
-  // Ajouter le popup au corps du document
-  document.body.appendChild(popup);
-  
-  // Ajouter l'écouteur d'événement au bouton
-  document.getElementById('gyro-permission-btn').addEventListener('click', function() {
-    requestGyroscopePermission();
-    // Ajouter une classe pour faire disparaître la popup en douceur
-    popup.classList.add('fade-out');
-    // Supprimer la popup après l'animation
-    setTimeout(() => {
-      if (popup.parentNode) {
-        document.body.removeChild(popup);
-      }
-    }, 500);
-  });
-  
-  // Ajouter le style CSS pour la popup
-  const style = document.createElement('style');
-  style.textContent = `
-    #gyro-permission-popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      animation: fade-in 0.5s ease-out;
-    }
+  // Ne créer la popup que si l'appareil est un mobile ou une tablette
+  if (isMobileOrTablet) {
+    // Créer l'élément de popup
+    const popup = document.createElement('div');
+    popup.id = 'gyro-permission-popup';
     
-    #gyro-permission-popup.fade-out {
-      animation: fade-out 0.5s ease-out forwards;
-    }
+    // Créer le contenu de la popup
+    popup.innerHTML = `
+        <div class="popup-content">
+            
+            <h3>EFFET PARALLAXE</h3>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#FFFDE4" class="bi bi-phone-flip" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M11 1H5a1 1 0 0 0-1 1v6a.5.5 0 0 1-1 0V2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v6a.5.5 0 0 1-1 0V2a1 1 0 0 0-1-1m1 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a.5.5 0 0 0-1 0v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2a.5.5 0 0 0-1 0zM1.713 7.954a.5.5 0 1 0-.419-.908c-.347.16-.654.348-.882.57C.184 7.842 0 8.139 0 8.5c0 .546.408.94.823 1.201.44.278 1.043.51 1.745.696C3.978 10.773 5.898 11 8 11q.148 0 .294-.002l-1.148 1.148a.5.5 0 0 0 .708.708l2-2a.5.5 0 0 0 0-.708l-2-2a.5.5 0 1 0-.708.708l1.145 1.144L8 10c-2.04 0-3.87-.221-5.174-.569-.656-.175-1.151-.374-1.47-.575C1.012 8.639 1 8.506 1 8.5c0-.003 0-.059.112-.17.115-.112.31-.242.6-.376Zm12.993-.908a.5.5 0 0 0-.419.908c.292.134.486.264.6.377.113.11.113.166.113.169s0 .065-.13.187c-.132.122-.352.26-.677.4-.645.28-1.596.523-2.763.687a.5.5 0 0 0 .14.99c1.212-.17 2.26-.43 3.02-.758.38-.164.713-.357.96-.587.246-.229.45-.537.45-.919 0-.362-.184-.66-.412-.883s-.535-.411-.882-.571M7.5 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+            </svg>
+            <p>Autorisez l'accès au gyroscope, pour une expérience immersive.</p>
+            <button id="gyro-permission-btn" class="bouton-classique">AUTORISER</button>
+            <button id="gyro-permission-btn-refuser">Refuser</button>
+        </div>
+    `;
     
-    @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    // Ajouter le popup au corps du document
+    document.body.appendChild(popup);
     
-    @keyframes fade-out {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
+    // Ajouter l'écouteur d'événement au bouton Autoriser
+    document.getElementById('gyro-permission-btn').addEventListener('click', function() {
+        requestGyroscopePermission();
+        // Ajouter une classe pour faire disparaître la popup en douceur
+        popup.classList.add('fade-out');
+        // Supprimer la popup après l'animation
+        setTimeout(() => {
+            if (popup.parentNode) {
+                document.body.removeChild(popup);
+            }
+        }, 500);
+    });
     
-    .popup-content {
-      width: 80%;
-      max-width: 400px;
-      background-color: rgba(0, 0, 0, 0.8);
-      border: 2px solid #FFFDE4;
-      padding: 30px;
-      text-align: center;
-      border-radius: 4px;
-      box-shadow: 0px 0px 15px rgba(249, 247, 220, 0.3);
-    }
-    
-    #gyro-permission-popup h3 {
-      font-family: "botw", sans-serif;
-      letter-spacing: 2px;
-      font-size: 28px;
-      margin-top: 0;
-      margin-bottom: 20px;
-      color: #FFFDE4;
-      filter: drop-shadow(0px 0px 7px #000000);
-    }
-    
-    #gyro-permission-popup p {
-      font-family: "inter", sans-serif;
-      font-style: italic;
-      font-size: 15px;
-      margin-bottom: 30px;
-      line-height: 1.5;
-      filter: drop-shadow(0px 0px 7px #000000);
-    }
-    
-    #gyro-permission-popup .bouton-classique {
-      margin: 0 auto;
-    }
-  `;
-  
-  document.head.appendChild(style);
+    // Ajouter l'écouteur d'événement au bouton Refuser
+    document.getElementById('gyro-permission-btn-refuser').addEventListener('click', function() {
+        // Stocker dans localStorage que l'utilisateur a refusé
+        localStorage.setItem('gyroscopePermissionRefused', 'true');
+        
+        // Ajouter une classe pour faire disparaître la popup en douceur
+        popup.classList.add('fade-out');
+        // Supprimer la popup après l'animation
+        setTimeout(() => {
+            if (popup.parentNode) {
+                document.body.removeChild(popup);
+            }
+        }, 500);
+    });
+  }
 }
 
 // Vérifier si le gyroscope est disponible et demander l'autorisation

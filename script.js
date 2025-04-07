@@ -31,11 +31,11 @@ const config = {
   gyroscope: {
     enabled: true,
     sensitivityX: 10, // Sensibilité de l'axe X (beta - inclinaison avant/arrière)
-    sensitivityY: 10, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     sensitivityY: 100, // Sensibilité de l'axe Y (gamma - inclinaison gauche/droite)
     maxAngleX: 25,    // Angle maximum en degrés pour l'axe X
     maxAngleY: 25,    // Angle maximum en degrés pour l'axe Y
-    smoothingFactor: 0.2 // Facteur de lissage pour les mouvements du gyroscope
+    smoothingFactor: 0.2, // Facteur de lissage pour les mouvements du gyroscope
+    throttleRate: 33    // Taux de rafraîchissement en millisecondes (0.005s)
   }
 };
 
@@ -46,11 +46,18 @@ let currentX = 0, currentY = 0;
 let animationFrameId = null;
 let edgeThreshold = 0.2; // Seuil pour déterminer la proximité au bord (0.2 = 20% de la largeur/hauteur)
 let isUsingGyro = false; // Pour savoir si on utilise le gyroscope ou la souris
+let gyroscopeActive = true; // État d'activation du gyroscope
 
 // Ajout des variables pour la position initiale du gyroscope
 let initialGyroX = null;
 let initialGyroY = null;
 let gyroInitialized = false;
+
+// Variable pour gérer l'état des écouteurs d'événements
+let gyroscopeEventListener = null;
+
+// Variable pour le contrôle du taux de rafraîchissement
+let lastGyroUpdateTime = 0;
 
 // Ajouter des transitions CSS aux éléments
 function setupElements() {
@@ -98,9 +105,14 @@ function updateMousePosition(event) {
   }
 }
 
-// Gérer les données du gyroscope
+// Gérer les données du gyroscope avec limitation du taux de rafraîchissement
 function handleGyroscope(event) {
-  if (!config.gyroscope.enabled) return;
+  if (!config.gyroscope.enabled || !gyroscopeActive) return;
+  
+  // Limiter le taux de rafraîchissement
+  const now = performance.now();
+  if (now - lastGyroUpdateTime < config.gyroscope.throttleRate) return;
+  lastGyroUpdateTime = now;
   
   // Ne traiter que les événements du gyroscope si nous n'utilisons pas la souris
   // Ou si nous sommes sur mobile (pas de souris)
@@ -120,15 +132,9 @@ function handleGyroscope(event) {
     }
     
     // Convertir les angles en position relative à l'écran
-    // Beta contrôle l'axe Y (inclinaison avant/arrière)
-    // Gamma contrôle l'axe X (inclinaison gauche/droite)
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
-    // Normaliser les valeurs du gyroscope pour qu'elles correspondent à des coordonnées d'écran
-    gyroY = ((betaAngle + config.gyroscope.maxAngleX) / (2 * config.gyroscope.maxAngleX)) * windowHeight;
-    gyroX = ((gammaAngle + config.gyroscope.maxAngleY) / (2 * config.gyroscope.maxAngleY)) * windowWidth;
-    // Normaliser les valeurs du gyroscope en tenant compte de la position initiale
     // Calculer le delta par rapport à la position initiale
     const deltaY = betaAngle - initialGyroY;
     const deltaX = gammaAngle - initialGyroX;
@@ -300,7 +306,7 @@ function requestGyroscopePermission() {
       DeviceOrientationEvent.requestPermission()
         .then(response => {
           if (response === 'granted') {
-            window.addEventListener('deviceorientation', handleGyroscope);
+            addGyroscopeListener();
             console.log("Autorisation du gyroscope accordée");
           } else {
             console.log("Autorisation du gyroscope refusée");
@@ -311,11 +317,85 @@ function requestGyroscopePermission() {
         });
     } else {
       // Pour les autres navigateurs qui ne nécessitent pas de permission
-      window.addEventListener('deviceorientation', handleGyroscope);
+      addGyroscopeListener();
       console.log("Gyroscope activé sans besoin de permission");
     }
   } else {
     console.log("Le gyroscope n'est pas disponible sur cet appareil");
+  }
+}
+
+// Fonction pour ajouter l'écouteur d'événement du gyroscope
+function addGyroscopeListener() {
+  if (!gyroscopeEventListener) {
+    gyroscopeEventListener = handleGyroscope;
+    window.addEventListener('deviceorientation', gyroscopeEventListener);
+    // Réinitialiser le temps de dernière mise à jour
+    lastGyroUpdateTime = 0;
+  }
+}
+
+// Fonction pour supprimer l'écouteur d'événement du gyroscope
+function removeGyroscopeListener() {
+  if (gyroscopeEventListener) {
+    window.removeEventListener('deviceorientation', gyroscopeEventListener);
+    gyroscopeEventListener = null;
+  }
+}
+
+// Vérifier si les sections cibles sont visibles dans la fenêtre
+function checkSectionsVisibility() {
+  const sections = [
+    document.getElementById('character-section'),
+    document.getElementById('first-section')
+  ];
+  
+  // Filtrer les sections qui existent
+  const validSections = sections.filter(section => section !== null);
+  
+  if (validSections.length === 0) {
+    console.warn("Les sections #character-section et #first-section n'ont pas été trouvées dans le document.");
+    return true; // Par défaut, activer le gyroscope si les sections n'existent pas
+  }
+  
+  // Vérifier si au moins une des sections est visible
+  let isAnySectionVisible = false;
+  
+  validSections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    // Considérer la section comme visible si une partie est dans la fenêtre
+    // ou si elle est juste au-dessus ou en-dessous de la fenêtre (marge de 100px)
+    if (
+      (rect.bottom > -100 && rect.top < windowHeight + 100) ||  // Partiellement visible ou proche
+      (rect.top < 0 && rect.bottom > windowHeight)              // Couvre toute la fenêtre
+    ) {
+      isAnySectionVisible = true;
+    }
+  });
+  
+  return isAnySectionVisible;
+}
+
+// Gérer l'activation/désactivation du gyroscope en fonction du défilement
+function handleScroll() {
+  const shouldBeActive = checkSectionsVisibility();
+  
+  // Si l'état change, mettre à jour
+  if (shouldBeActive !== gyroscopeActive) {
+    gyroscopeActive = shouldBeActive;
+    
+    if (gyroscopeActive) {
+      console.log("Gyroscope activé - sections cibles visibles");
+      // Réactiver le gyroscope si l'autorisation a déjà été accordée
+      if (gyroscopeEventListener) {
+        addGyroscopeListener();
+      }
+    } else {
+      console.log("Gyroscope désactivé - sections cibles non visibles");
+      removeGyroscopeListener();
+    }
   }
 }
 
@@ -328,6 +408,12 @@ function init() {
     hasMouseMoved = true;
     updateMousePosition(e);
   });
+  
+  // Écouter les événements de défilement
+  window.addEventListener("scroll", handleScroll);
+  
+  // Vérifier la visibilité initiale des sections
+  gyroscopeActive = checkSectionsVisibility();
   
   // Initialiser le gyroscope pour les appareils mobiles
   if (isMobileDevice()) {
@@ -348,20 +434,20 @@ function init() {
     
     // Supprimer les écouteurs d'événements
     document.removeEventListener("mousemove", updateMousePosition);
-    window.removeEventListener('deviceorientation', handleGyroscope);
+    window.removeEventListener("scroll", handleScroll);
+    removeGyroscopeListener();
   });
 }
 
 // Démarrer le parallaxe quand le DOM est entièrement chargé
 document.addEventListener('DOMContentLoaded', init);
 
-
 const expandBtn = document.querySelectorAll('.expandBtn');
 expandBtn.forEach(btn => {
   btn.addEventListener("click", () => {
     btn.classList.toggle('expanded');
   });
-})
+});
 
 
 

@@ -255,17 +255,19 @@ function createPermissionUI() {
     
     // Ajouter l'écouteur d'événement au bouton Autoriser
     document.getElementById('gyro-permission-btn').addEventListener('click', function() {
-        document.querySelectorAll('.expandBtn').classList.add('active');
-
-        requestGyroscopePermission();
-        // Ajouter une classe pour faire disparaître la popup en douceur
-        popup.classList.add('fade-out');
-        // Supprimer la popup après l'animation
-        setTimeout(() => {
-            if (popup.parentNode) {
-                document.body.removeChild(popup);
-            }
-        }, 500);
+      requestGyroscopePermission();
+      // Ajouter une classe pour faire disparaître la popup en douceur
+      popup.classList.add('fade-out');
+      // Supprimer la popup après l'animation
+      setTimeout(() => {
+          if (popup.parentNode) {
+              document.body.removeChild(popup);
+          }
+      }, 500);
+      const gyroBtn = document.querySelectorAll('.expandBtn');
+      gyroBtn.forEach((btn) => {
+        btn.classList.add('active');
+      });
     });
     
     // Ajouter l'écouteur d'événement au bouton Refuser

@@ -267,6 +267,85 @@ h1, h2 {
     filter: blur(0px);
 }
 
+.expandBtn {
+    display: none;
+}
+
+@keyframes battement {
+    0% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(1.05);
+    }
+    40% {
+      transform: scale(1);
+    }
+    60% {
+      transform: scale(1.06);
+    }
+    100% {
+      transform: scale(1);
+    }
+}
+
+.expandBtn.active {
+    display: flex;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: rgba(3, 5, 5, 0.6);
+    color: #ffff;
+    outline: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    animation: battement 5s infinite ease-in-out;
+    overflow: hidden;
+    z-index: 20;
+}
+
+
+.expandBtn.active .texte-gyro {
+    font-family: 'inter';
+    font-weight: 400;
+    font-size: 15px;
+    font-style: italic;
+    color: white;
+    position: absolute;
+    white-space: nowrap;
+    right: 50px;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+
+.expandBtn.active.expanded {
+    width: 260px;
+    animation: unset
+}
+
+.expandBtn.active.expanded .texte-gyro {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+.icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+
 
 /* Première section */
 
@@ -1179,6 +1258,10 @@ h1, h2 {
 
 #title-ganondorf {
     bottom: 20%; right: 10%;
+}
+
+#gyro-zelda {
+    top: 50px;
 }
 
 /* Section trailer */

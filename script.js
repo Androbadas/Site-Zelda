@@ -76,7 +76,10 @@ function calculateEdgeProximity(x, y, width, height) {
   
   // Calculer la distance au centre (0.5, 0.5)
   const distanceX = Math.abs(normalizedX - 0.5) * 2; // 0 au centre, 1 au bord
-  const distanceY = Math.abs(normalizedY - 0.5) * 2;
+  
+  // Si moveFactorY est 0, ignorer l'axe Y dans le calcul de la proximité
+  const distanceY = config.background.moveFactorY === 0 && config.character.moveFactorY === 0 ? 
+                    0 : Math.abs(normalizedY - 0.5) * 2;
   
   // Retourner la proximité au bord et la direction
   return {
@@ -363,8 +366,7 @@ function init() {
   });
 }
 
-// Démarrer le parallaxe quand le DOM est entièrement chargé
-document.addEventListener('DOMContentLoaded', init);
+
 
 const expandBtn = document.querySelectorAll('.expandBtn');
 expandBtn.forEach(btn => {
@@ -492,6 +494,8 @@ sliders.forEach(slider => {
 
 document.addEventListener("DOMContentLoaded", ()=>{
 sliderInteraction();
+// Démarrer le parallaxe quand le DOM est entièrement chargé
+init();
 });
 
 // pas oublier le défilement automatique des sliders

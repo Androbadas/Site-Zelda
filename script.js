@@ -425,149 +425,86 @@ if (document.readyState === 'loading') {
                 // });
 
 
-/**
- * SliderInteraction - Version optimisée
- * Améliore les performances en réduisant les opérations DOM et en utilisant
- * des techniques modernes de gestion des événements
- */
-
-// Fonction d'initialisation optimisée avec délégation d'événements
 const sliderInteraction = () => {
-  // Cache des sélecteurs DOM fréquemment utilisés
-  const sliders = document.querySelectorAll(".slider");
-  if (!sliders.length) return;
-  
-  // Utiliser un Map pour conserver les références aux éléments actifs
-  const activeElements = new Map();
-  
-  // Préparation et mise en cache des éléments pour chaque slider
-  sliders.forEach(slider => {
-    // Mise en cache des éléments pour minimiser les requêtes DOM
-    const sliderElements = {
-      buttons: Array.from(slider.querySelectorAll(".nav-button")),
-      videos: Array.from(slider.querySelectorAll(".video-slide")),
-      titles: Array.from(slider.querySelectorAll(".title-slide")),
-      slides: Array.from(slider.querySelectorAll(".slide")),
-      navExplorer: document.querySelector(".nav-explorer"), // À l'extérieur du slider
-      subSlider: document.querySelector(".sub-slider")      // À l'extérieur du slider
-    };
-    
-    // Si aucun bouton n'est trouvé, ignorer ce slider
-    if (!sliderElements.buttons.length) return;
-    
-    // Créer un index pour accélérer la recherche d'éléments par ID
-    const elementsById = {};
-    
-    // Indexation des boutons par ID
-    sliderElements.buttons.forEach(btn => {
-      const id = btn.id;
-      if (!id) return;
-      
-      elementsById[id] = {
-        button: btn,
-        text: btn.querySelector(".nav-button-text"),
-        img: btn.querySelector(".nav-button-img"),
-        video: document.getElementById(`video-${id}`),
-        title: document.getElementById(`title-${id}`),
-        slide: document.getElementById(`slide-${id}`)
-      };
-    });
-    
-    // Fonction optimisée pour retirer les classes actives
-    const removeActiveClasses = () => {
-      // Utilisation de forEach une seule fois pour chaque type d'élément
-      sliderElements.buttons.forEach(btn => {
-        btn.classList.remove("active");
-        const text = btn.querySelector(".nav-button-text");
-        if (text) text.classList.remove("active");
-        const img = btn.querySelector(".nav-button-img");
-        if (img) img.classList.remove("active");
-      });
-      
-      sliderElements.videos.forEach(video => {
-        video.classList.remove("active");
-        video.currentTime = 0;
-      });
-      
-      sliderElements.titles.forEach(title => title.classList.remove("active"));
-      sliderElements.slides.forEach(slide => slide.classList.remove("active"));
-      
-      // Les éléments spécifiques "explorer"
-      if (sliderElements.navExplorer) {
-        sliderElements.navExplorer.classList.remove("active");
+// Récupère tous les sliders
+const sliders = document.querySelectorAll(".slider");
+if (!sliders.length) return;
+
+sliders.forEach(slider => {
+  // Récupère les boutons du slider en cours
+  const buttons = slider.querySelectorAll(".nav-button");
+  if (!buttons.length) return;
+
+  // Fonction utilitaire pour retirer la classe "active" des éléments associés
+  const removeActiveClasses = () => {
+    buttons.forEach(btn => {
+      btn.classList.remove("active");
+      const text = btn.querySelector(".nav-button-text");
+      const img = btn.querySelector(".nav-button-img");
+      if (text) text.classList.remove("active");
+      if (img) img.classList.remove("active");
+      if (btn.id === "creez" || btn.id === "decouvrez") {
+        document.querySelector(".nav-explorer").classList.remove("active");
       }
-    };
-    
-    // Utilisation de la délégation d'événements pour réduire le nombre d'écouteurs
-    slider.addEventListener("click", (event) => {
-      // Trouver le bouton le plus proche du clic (si existe)
-      const btn = event.target.closest(".nav-button");
-      if (!btn || !sliderElements.buttons.includes(btn) || btn.classList.contains("active")) return;
-      
-      // Opérations DOM regroupées pour minimiser les reflows
-      requestAnimationFrame(() => {
-        // Reset current state
-        removeActiveClasses();
-        
-        // Get elements for this button
-        const id = btn.id;
-        const elements = elementsById[id];
-        
-        // Apply active classes efficiently
-        btn.classList.add("active");
-        if (elements.text) elements.text.classList.add("active");
-        if (elements.img) elements.img.classList.add("active");
-        if (elements.video) elements.video.classList.add("active");
-        if (elements.title) elements.title.classList.add("active");
-        if (elements.slide) elements.slide.classList.add("active");
-        
-        // Handle special cases for "explorer" and related buttons
-        if (id === "explorer" && sliderElements.subSlider) {
-          sliderElements.subSlider.classList.add("active");
-          
-          // Activer le cas "ciel" par défaut
-          const cielElements = elementsById["ciel"];
-          if (cielElements) {
-            if (cielElements.video) cielElements.video.classList.add("active");
-            if (cielElements.title) cielElements.title.classList.add("active");
-            if (cielElements.button) cielElements.button.classList.add("active");
-          }
-          
-          if (sliderElements.navExplorer) {
-            sliderElements.navExplorer.classList.add("active");
-          }
-        }
-        
-        // Handle sub-navigation cases
-        if (["ciel", "terre", "profondeur"].includes(id)) {
-          if (sliderElements.navExplorer) {
-            sliderElements.navExplorer.classList.add("active");
-          }
-          
-          const explorerElements = elementsById["explorer"];
-          if (explorerElements) {
-            explorerElements.button.classList.add("active");
-            if (explorerElements.text) explorerElements.text.classList.add("active");
-            if (explorerElements.img) explorerElements.img.classList.add("active");
-          }
-        }
-      });
-    }, { passive: true }); // Marqué comme passif pour améliorer les performances tactiles
+    });
+
+    slider.querySelectorAll(".video-slide").forEach(video => {
+      video.classList.remove("active");
+      video.currentTime = 0;
+    });
+    slider.querySelectorAll(".title-slide").forEach(title => {
+      title.classList.remove("active");
+    });
+    slider.querySelectorAll(".slide").forEach(slide => {
+      slide.classList.remove("active");
+    })
+  };
+
+  // Gestion des clics pour chaque bouton
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.classList.contains("active")) return;
+
+      // Retirer les classes "active" uniquement pour ce slider
+      removeActiveClasses();
+
+      // Ajouter les classes actives au bouton cliqué
+      btn.classList.add("active");
+      const text = btn.querySelector(".nav-button-text");
+      const img = btn.querySelector(".nav-button-img");
+      if (text) text.classList.add("active");
+      if (img) img.classList.add("active");
+
+      // Activer le bon slide
+      const video = document.getElementById(`video-${btn.id}`);
+      const title = document.getElementById(`title-${btn.id}`);
+      const slide = document.getElementById(`slide-${btn.id}`);
+      if (video) video.classList.add("active");
+      if (title) title.classList.add("active");
+      if (slide) slide.classList.add("active");
+
+      if (btn.id === "explorer") {
+        document.querySelector(".sub-slider").classList.add("active");
+        document.getElementById("video-ciel").classList.add("active");
+        document.getElementById("title-ciel").classList.add("active");
+        document.getElementById("ciel").classList.add("active");
+        document.querySelector(".nav-explorer").classList.add("active");
+      }
+
+      if (["ciel", "terre", "profondeur"].includes(btn.id)) {
+        document.querySelector(".nav-explorer").classList.add("active");
+        document.getElementById("explorer").classList.add("active");
+        document.getElementById("explorer").querySelector(".nav-button-text").classList.add("active");
+        document.getElementById("explorer").querySelector(".nav-button-img").classList.add("active");
+      }
+    });
   });
+});
 };
 
-// Initialisation déférée pour ne pas bloquer le chargement initial
-const initializeWhenReady = () => {
-  if (document.readyState === 'loading') {
-    // Si le DOM n'est pas encore prêt, attendre l'événement DOMContentLoaded
-    document.addEventListener("DOMContentLoaded", sliderInteraction, { once: true });
-  } else {
-    // Si le DOM est déjà prêt, exécuter immédiatement
-    sliderInteraction();
-  }
-};
 
-// Démarrer l'initialisation de manière optimisée
-initializeWhenReady();
+document.addEventListener("DOMContentLoaded", ()=>{
+sliderInteraction();
+});
 
 // pas oublier le défilement automatique des sliders

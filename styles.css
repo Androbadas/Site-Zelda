@@ -3123,7 +3123,7 @@ h1, h2 {
 
 @media only screen and (max-height: 560px) {
 
-    #logo-middle-div .bouton-classique {
+    /* #logo-middle-div .bouton-classique {
         margin-top: 5vh;
     }
     #container-paralax {
@@ -3137,5 +3137,15 @@ h1, h2 {
         width: 50vh;
         height: 25vh;
         background-size: 120%;
+    } */
+
+    .section, 
+    .slider,
+    .video, #first-section {
+        height: 200vh;
+    }
+
+    #all-sell-button-container {
+        margin-bottom: 20px;
     }
 }

@@ -3120,3 +3120,22 @@ h1, h2 {
         color: #64FFC0;
     }
 }
+
+@media only screen and (max-height: 560px) {
+
+    #logo-middle-div .bouton-classique {
+        margin-top: 5vh;
+    }
+    #container-paralax {
+        position: absolute;
+        bottom: -50vh;
+        right: -80vh;
+        margin: 0;
+        padding: 0;
+    }
+    #background-paralax {
+        width: 50vh;
+        height: 25vh;
+        background-size: 120%;
+    }
+}

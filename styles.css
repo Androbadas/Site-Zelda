@@ -94,7 +94,7 @@ h1, h2 {
      
 @keyframes fade-out {
     from { opacity: 1; }
-    to { opacity: 0; }clara
+    to { opacity: 0; }
 }
      
 .popup-content {
